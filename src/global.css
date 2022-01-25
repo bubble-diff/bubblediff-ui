@@ -10,3 +10,8 @@
 [data-theme="dark"] .site-layout .site-layout-background {
   background: #141414;
 }
+
+/* 设置 antd 的按钮间隔 */
+.ant-btn {
+  margin-right: 8px;
+}

@@ -1,64 +1,32 @@
-import { Form, Input, Button, FormInstance } from "antd";
-import React from "react";
-import { ReactNode } from "react";
+import { PageContainer } from "@ant-design/pro-layout";
+import ProCard from "@ant-design/pro-card";
+import ProForm, { ProFormText } from "@ant-design/pro-form";
 
-const onFinish = (values: any) => {
-  console.log("Success:", values);
+const AddTask = () => {
+  return (
+    <PageContainer>
+      <ProCard layout="center" style={{ height: "68vh" }}>
+        <ProForm autoFocusFirstInput>
+          <ProFormText
+            width="md"
+            name="taskname"
+            required
+            label="任务名称"
+            placeholder="请输入名称"
+            rules={[{ required: true, message: "这是必填项" }]}
+          />
+
+          <ProFormText
+            disabled
+            width="md"
+            name="owner"
+            label="负责人"
+            initialValue="当前用户登录名"
+          />
+        </ProForm>
+      </ProCard>
+    </PageContainer>
+  );
 };
-
-const onFinishFailed = (errorInfo: any) => {
-  console.log("Failed:", errorInfo);
-};
-
-class AddTask extends React.Component {
-  formRef = React.createRef<FormInstance>();
-
-  onReset = () => {
-    this.formRef.current!.resetFields();
-  };
-
-  render(): ReactNode {
-    return (
-      <Form
-        name="add_task"
-        ref={this.formRef}
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 8 }}
-        initialValues={{
-          owner: "当前登录用户名",
-        }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        autoComplete="off"
-      >
-        <Form.Item
-          label="任务名称"
-          name="taskname"
-          rules={[
-            {
-              required: true,
-              message: "Please input your taskname!",
-            },
-          ]}
-        >
-          <Input placeholder="Please enter" />
-        </Form.Item>
-
-        <Form.Item label="负责人" name="owner" rules={[{ required: true }]}>
-          <Input disabled />
-        </Form.Item>
-
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" htmlType="submit">
-            提交
-          </Button>
-          <Button htmlType="button" onClick={this.onReset}>
-            Reset
-          </Button>
-        </Form.Item>
-      </Form>
-    );
-  }
-}
 
 export default AddTask;

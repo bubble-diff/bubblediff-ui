@@ -1,3 +1,4 @@
+import { Spin } from "@douyinfe/semi-ui";
 import axios from "axios";
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -48,9 +49,9 @@ const GithubCallback = () => {
 
   return (
     <div>
-      <p>get jwt...</p>
-      <br />
-      <p>TODO: Make this page beautiful.</p>
+      <Spin tip="登录中...">
+        <div style={{ minHeight: "100vh" }}></div>
+      </Spin>
     </div>
   );
 };

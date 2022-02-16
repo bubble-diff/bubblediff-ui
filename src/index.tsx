@@ -1,39 +1,42 @@
-// create-react-app 将 index.js 作为入口
-
-import React from "react";
+import "reset-css";
 import ReactDOM from "react-dom";
+import React, { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import App from "./app";
+import Home from "./pages/home";
+import {
+  getEmptyMessage,
+  getEmptyUser,
+  GlobalContext,
+  MessageContent,
+  UserContent,
+} from "./context";
+import GithubCallback from "./components/github-callback";
+import NotFound from "./pages/404";
 
-// antd components need this shit below.
-import "antd/dist/antd.min.css";
-import "@ant-design/pro-table/dist/table.css";
-import "@ant-design/pro-layout/dist/layout.css";
-import "@ant-design/pro-form/dist/form.css";
-import "@ant-design/pro-card/dist/card.css";
+const Index = () => {
+  const [user, setUser] = useState<UserContent>(getEmptyUser());
+  const [message, setMessage] = useState<MessageContent>(getEmptyMessage());
 
-import TaskTable from "./components/TaskTable";
-import Home from "./components/Home";
-import AddTask from "./components/AddTask";
-import ConfigTask from "./components/ConfigTask";
-import Login from "./components/Login";
+  return (
+    <React.StrictMode>
+      <GlobalContext.Provider value={{ user, setUser, message, setMessage }}>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<App />}>
+              <Route index element={<Home />} />
+            </Route>
 
-import MyAppLayout from "./AppLayout";
+            <Route path="/callback">
+              <Route path="github" element={<GithubCallback />} />
+            </Route>
 
-ReactDOM.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<MyAppLayout />}>
-          <Route index element={<Home />} />
-          <Route path="login" element={<Login />} />
-          <Route path="tasks">
-            <Route index element={<TaskTable />} />
-            <Route path="add" element={<AddTask />} />
-            <Route path="config" element={<ConfigTask />} />
-          </Route>
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  </React.StrictMode>,
-  document.getElementById("root")
-);
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </GlobalContext.Provider>
+    </React.StrictMode>
+  );
+};
+
+ReactDOM.render(<Index />, document.getElementById("root"));

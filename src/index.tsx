@@ -13,6 +13,8 @@ import {
 } from "./context";
 import GithubCallback from "./components/github-callback";
 import NotFound from "./pages/404";
+import Tasks from "./pages/tasks";
+import AddTask from "./pages/add-task";
 
 const Index = () => {
   const [user, setUser] = useState<UserContent>(getEmptyUser());
@@ -25,6 +27,10 @@ const Index = () => {
           <Routes>
             <Route path="/" element={<App />}>
               <Route index element={<Home />} />
+              <Route path="tasks">
+                <Route index element={<Tasks />} />
+                <Route path="add" element={<AddTask />} />
+              </Route>
             </Route>
 
             <Route path="/callback">

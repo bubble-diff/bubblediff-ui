@@ -3,13 +3,13 @@ import { createContext, useContext } from "react";
 // UserContent 表示App当前用户信息
 export type UserContent = {
   id: number;
-  name: string;
-  avatarUrl: string;
+  login: string;
+  avatar_url: string;
   email: string;
 };
 
 export const getEmptyUser = (): UserContent => {
-  return { id: -1, name: "", avatarUrl: "", email: "" };
+  return { id: -1, login: "", avatar_url: "", email: "" };
 };
 
 export enum MsgType {

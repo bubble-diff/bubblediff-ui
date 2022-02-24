@@ -1,8 +1,13 @@
 import { Button } from "@douyinfe/semi-ui";
 import { Typography } from "@douyinfe/semi-ui";
+import { useNavigate } from "react-router-dom";
+import { useGlobalContext } from "../../../../context";
 
 const Welcome = () => {
   const { Paragraph, Title } = Typography;
+  const { user } = useGlobalContext();
+  const navigate = useNavigate();
+
   return (
     <div
       style={{
@@ -22,6 +27,15 @@ const Welcome = () => {
         style={{
           marginTop: "20px",
           borderRadius: "var(--semi-border-radius-full)",
+        }}
+        onClick={(e) => {
+          e.preventDefault();
+          if (user.id > 0) {
+            // 已登录
+            navigate("/tasks/add", { replace: true });
+            return;
+          }
+          window.location.href = process.env.REACT_APP_LOGIN_API!;
         }}
       >
         创建Diff任务

@@ -22,9 +22,9 @@ const UserInfo = () => {
           <Dropdown.Menu>
             <Card style={{ maxWidth: 340, borderRadius: "0px" }}>
               <Meta
-                title={user.name}
+                title={user.login}
                 description={user.email}
-                avatar={<Avatar size="small" src={user.avatarUrl} />}
+                avatar={<Avatar size="small" src={user.avatar_url} />}
               />
             </Card>
             <Dropdown.Item icon={<IconArrowRight />} onClick={Logout}>
@@ -33,7 +33,7 @@ const UserInfo = () => {
           </Dropdown.Menu>
         }
       >
-        <Avatar size="small" src={user.avatarUrl} />
+        <Avatar size="small" src={user.avatar_url} />
       </Dropdown>
     );
   }

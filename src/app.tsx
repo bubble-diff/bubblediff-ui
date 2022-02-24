@@ -5,20 +5,20 @@ import {
   RadioGroup,
   Radio,
   Typography,
-  Space,
   Toast,
 } from "@douyinfe/semi-ui";
 import {
-  IconSemiLogo,
   IconBytedanceLogo,
   IconGithubLogo,
   IconLink,
 } from "@douyinfe/semi-icons";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import UserInfo from "./components/userinfo";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getEmptyMessage, MsgType, useGlobalContext } from "./context";
 import axios from "axios";
+import Logo from "./assets/logo.png";
+import { RadioChangeEvent } from "@douyinfe/semi-ui/lib/es/radio";
 
 const renderMessage = (msg: string, type: MsgType) => {
   const opts = {
@@ -45,8 +45,16 @@ const renderMessage = (msg: string, type: MsgType) => {
 
 const App = () => {
   const { Header, Footer, Content } = Layout;
-  const { Title, Text } = Typography;
+  const { Text } = Typography;
   const { user, setUser, message, setMessage } = useGlobalContext();
+  const navigate = useNavigate();
+  const [tab, setTab] = useState("");
+
+  // 导航栏callback函数
+  const onChange = (e: RadioChangeEvent) => {
+    setTab(e.target.value);
+    navigate(`/${e.target.value}`, { replace: true });
+  };
 
   // 尝试获取用户信息
   const getUser = async () => {
@@ -68,8 +76,8 @@ const App = () => {
         // 设置user context
         setUser({
           id: data.id,
-          name: data.login,
-          avatarUrl: data.avatar_url,
+          login: data.login,
+          avatar_url: data.avatar_url,
           email: data.email,
         });
         // 设置msg context
@@ -99,30 +107,32 @@ const App = () => {
   }, [message]);
 
   return (
-    <Layout style={{ border: "1px solid var(--semi-color-border)" }}>
+    <Layout
+      style={{
+        border: "1px solid var(--semi-color-border)",
+        minHeight: "100vh",
+      }}
+    >
       <Header style={{ backgroundColor: "var(--semi-color-bg-1)" }}>
         <div>
-          <Nav mode="horizontal" defaultSelectedKeys={["Home"]}>
-            <Nav.Header>
-              <Space>
-                <IconSemiLogo style={{ fontSize: 36 }} />
-                <Title heading={2}>BubbleDiff</Title>
-              </Space>
-            </Nav.Header>
+          <Nav mode="horizontal">
+            <Nav.Header
+              logo={<img src={Logo} alt="logo" />}
+              text="BubbleDiff"
+            />
+
+            <RadioGroup
+              type="button"
+              buttonSize="middle"
+              value={tab}
+              onChange={onChange}
+              style={{ marginRight: "12px" }}
+            >
+              <Radio value={""}>首页</Radio>
+              <Radio value={"tasks"}>任务列表</Radio>
+            </RadioGroup>
 
             <Nav.Footer>
-              <RadioGroup
-                type="button"
-                buttonSize="middle"
-                defaultValue={1}
-                aria-label="单选组合示例"
-                style={{ marginRight: "12px" }}
-              >
-                <Radio value={1}>首页</Radio>
-                <Radio value={2}>任务列表</Radio>
-                <Radio value={3}>我的任务</Radio>
-              </RadioGroup>
-
               <a href="https://github.com/bubble-diff">
                 <Button
                   theme="borderless"
@@ -139,11 +149,7 @@ const App = () => {
           </Nav>
         </div>
       </Header>
-      <Content
-        style={{
-          backgroundColor: "var(--semi-color-bg-0)",
-        }}
-      >
+      <Content style={{ backgroundColor: "var(--semi-color-bg-0)" }}>
         <Outlet />
       </Content>
       <Footer

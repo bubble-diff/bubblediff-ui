@@ -26,15 +26,8 @@ const Welcome = () => {
           marginTop: "20px",
           borderRadius: "var(--semi-border-radius-full)",
         }}
-        onClick={(e) => {
-          e.preventDefault();
+        onClick={() => {
           navigate("/tasks/add", { replace: true });
-          // if (user.id > 0) {
-          //   // 已登录
-          //   navigate("/tasks/add", { replace: true });
-          //   return;
-          // }
-          // window.location.href = process.env.REACT_APP_LOGIN_API!;
         }}
       >
         创建Diff任务

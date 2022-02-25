@@ -19,6 +19,7 @@ import { getEmptyMessage, MsgType, useGlobalContext } from "./context";
 import Logo from "./assets/logo.png";
 import { RadioChangeEvent } from "@douyinfe/semi-ui/lib/es/radio";
 import API from "./api";
+import { JWT } from "./constants";
 
 const renderMessage = (msg: string, type: MsgType) => {
   const opts = {
@@ -63,7 +64,7 @@ const App = () => {
       return;
     }
     try {
-      const jwt = localStorage.getItem("jwt");
+      const jwt = localStorage.getItem(JWT);
       if (jwt) {
         const { data } = await API.get("/api/v1/userinfo", {
           headers: {
@@ -84,7 +85,7 @@ const App = () => {
     } catch (err) {
       console.log(err);
       console.log("jwt maybe invalid, clear it...");
-      localStorage.removeItem("jwt");
+      localStorage.removeItem(JWT);
       setMessage({
         msgType: MsgType.Error,
         msg: "当前会话已过期，请重新登录。",

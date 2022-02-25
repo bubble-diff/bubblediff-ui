@@ -3,6 +3,7 @@ import {
   IllustrationNoAccessDark,
 } from "@douyinfe/semi-illustrations";
 import { Button, Empty } from "@douyinfe/semi-ui";
+import { GITHUB_OAUTH } from "../../constants";
 import { useGlobalContext } from "../../context";
 
 const RequireAuth = ({ children }: { children: JSX.Element }) => {
@@ -33,7 +34,7 @@ const RequireAuth = ({ children }: { children: JSX.Element }) => {
               theme="solid"
               type="primary"
               onClick={() => {
-                window.location.href = process.env.REACT_APP_LOGIN_API!;
+                window.location.href = GITHUB_OAUTH;
               }}
             >
               立即登录

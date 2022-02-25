@@ -2,6 +2,7 @@ import { Spin } from "@douyinfe/semi-ui";
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import API from "../../api";
+import { JWT } from "../../constants";
 import { MsgType, useGlobalContext } from "../../context";
 
 // GithubCallback 当组件mounted时，尝试获取jwt。
@@ -15,7 +16,7 @@ const GithubCallback = () => {
     // jwt存在时，立即返回。
     // jwt仅当用户主动退出，或调服务api返回无效jwt时，才删除jwt。
     // 删除jwt时，user信息也应移除。
-    if (localStorage.getItem("jwt")) {
+    if (localStorage.getItem(JWT)) {
       return;
     }
 
@@ -30,7 +31,7 @@ const GithubCallback = () => {
     } else {
       try {
         const { data } = await API.get("/login", { params: { code: code } });
-        localStorage.setItem("jwt", data.token);
+        localStorage.setItem(JWT, data.token);
       } catch (err) {
         // todo: 处理不同类型的error
         console.log(err);

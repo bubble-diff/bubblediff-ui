@@ -1,5 +1,6 @@
 import { IconArrowRight } from "@douyinfe/semi-icons";
 import { Avatar, Card, Dropdown } from "@douyinfe/semi-ui";
+import { GITHUB_OAUTH, JWT } from "../../constants";
 import { getEmptyUser, useGlobalContext } from "../../context";
 
 const UserInfo = () => {
@@ -8,7 +9,7 @@ const UserInfo = () => {
   const Logout = () => {
     console.log("remove jwt and user...");
     setUser(getEmptyUser());
-    localStorage.removeItem("jwt");
+    localStorage.removeItem(JWT);
     window.location.href = "/";
   };
 
@@ -48,7 +49,7 @@ const UserInfo = () => {
           <Dropdown.Item
             icon={<IconArrowRight />}
             onClick={() => {
-              window.location.href = process.env.REACT_APP_LOGIN_API!;
+              window.location.href = GITHUB_OAUTH;
             }}
           >
             立即登录

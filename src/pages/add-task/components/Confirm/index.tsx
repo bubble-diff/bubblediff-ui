@@ -6,6 +6,7 @@ import {
   Typography,
 } from "@douyinfe/semi-ui";
 import API from "../../../../api";
+import { JWT } from "../../../../constants";
 import { useAddTaskContext } from "../../context";
 import SwitchTag from "./switch_tag";
 
@@ -45,7 +46,7 @@ const Confirm = () => {
   ) => {
     e.preventDefault();
     try {
-      const jwt = localStorage.getItem("jwt");
+      const jwt = localStorage.getItem(JWT);
       const resp = await API.post("/api/v1/task", data, {
         headers: { Authorization: `Bearer ${jwt}` },
       });
@@ -55,7 +56,7 @@ const Confirm = () => {
     } catch (err) {
       console.log(err);
       console.log("jwt invalid, clear it...");
-      localStorage.removeItem("jwt");
+      localStorage.removeItem(JWT);
     }
   };
 

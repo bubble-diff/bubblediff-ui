@@ -1,7 +1,7 @@
 import { Spin } from "@douyinfe/semi-ui";
-import axios from "axios";
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import API from "../../api";
 import { MsgType, useGlobalContext } from "../../context";
 
 // GithubCallback 当组件mounted时，尝试获取jwt。
@@ -22,7 +22,6 @@ const GithubCallback = () => {
     const code = searchParams.get("code");
     const error = searchParams.get("error");
     const desc = searchParams.get("description");
-    const api = process.env.REACT_APP_AUTH_API!;
     // 检查参数是否合法
     if (!code || error) {
       console.log(error);
@@ -30,10 +29,8 @@ const GithubCallback = () => {
       setMessage({ msgType: MsgType.Error, msg: `登录失败！${desc}` });
     } else {
       try {
-        const resp = await axios.get(`${api}?code=${code}`, {
-          timeout: 5000,
-        });
-        localStorage.setItem("jwt", resp.data.token);
+        const { data } = await API.get("/login", { params: { code: code } });
+        localStorage.setItem("jwt", data.token);
       } catch (err) {
         // todo: 处理不同类型的error
         console.log(err);

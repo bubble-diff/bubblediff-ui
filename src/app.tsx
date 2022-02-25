@@ -16,9 +16,9 @@ import { Outlet, useNavigate } from "react-router-dom";
 import UserInfo from "./components/userinfo";
 import { useEffect, useState } from "react";
 import { getEmptyMessage, MsgType, useGlobalContext } from "./context";
-import axios from "axios";
 import Logo from "./assets/logo.png";
 import { RadioChangeEvent } from "@douyinfe/semi-ui/lib/es/radio";
+import API from "./api";
 
 const renderMessage = (msg: string, type: MsgType) => {
   const opts = {
@@ -64,10 +64,8 @@ const App = () => {
     }
     try {
       const jwt = localStorage.getItem("jwt");
-      const api = process.env.REACT_APP_GETUSER_API!;
       if (jwt) {
-        const { data } = await axios.get(`${api}`, {
-          timeout: 5000,
+        const { data } = await API.get("/api/v1/userinfo", {
           headers: {
             Authorization: `Bearer ${jwt}`,
           },

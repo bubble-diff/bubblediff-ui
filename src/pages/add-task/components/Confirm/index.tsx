@@ -5,7 +5,7 @@ import {
   Space,
   Typography,
 } from "@douyinfe/semi-ui";
-import axios from "axios";
+import API from "../../../../api";
 import { useAddTaskContext } from "../../context";
 import SwitchTag from "./switch_tag";
 
@@ -40,6 +40,25 @@ const Confirm = () => {
     },
   ];
 
+  const handleSubmit = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+    try {
+      const jwt = localStorage.getItem("jwt");
+      const resp = await API.post("/api/v1/task", data, {
+        headers: { Authorization: `Bearer ${jwt}` },
+      });
+      
+      // todo: 返回提示，跳转至其他页面
+      console.log(resp);
+    } catch (err) {
+      console.log(err);
+      console.log("jwt invalid, clear it...");
+      localStorage.removeItem("jwt");
+    }
+  };
+
   return (
     <div>
       <Title heading={3}>预览</Title>
@@ -70,29 +89,7 @@ const Confirm = () => {
           >
             上一步
           </Button>
-          <Button
-            theme="solid"
-            type="primary"
-            onClick={async (e) => {
-              e.preventDefault();
-              console.log(JSON.stringify(data));
-              try {
-                // todo: 把axios封装起来成为一个个服务
-                const jwt = localStorage.getItem("jwt");
-                const api = process.env.REACT_APP_ADDTASK_API!;
-                const resp = await axios.post(`${api}`, data, {
-                  timeout: 5000,
-                  headers: { Authorization: `Bearer ${jwt}` },
-                });
-                console.log(resp);
-                // todo: 返回提示，跳转至其他页面
-              } catch (err) {
-                console.log(err);
-                console.log("jwt maybe invalid, clear it...");
-                localStorage.removeItem("jwt");
-              }
-            }}
-          >
+          <Button theme="solid" type="primary" onClick={handleSubmit}>
             提交
           </Button>
         </Space>

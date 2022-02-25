@@ -1,10 +1,10 @@
 import { Layout, Steps } from "@douyinfe/semi-ui";
 import { useState } from "react";
-import AdvanceForm from "./components/AdvanceForm";
-import BaseForm from "./components/BaseForm";
-import Confirm from "./components/Confirm";
-import FilterForm from "./components/FilterForm";
-import TrafficForm from "./components/TrafficForm";
+import AdvanceForm from "./components/advance-form";
+import BaseForm from "./components/base-form";
+import Confirm from "./components/confirm";
+import FilterForm from "./components/filter-form";
+import TrafficForm from "./components/traffic-form";
 import { AddTaskContext, FormContent, getEmptyFormContent } from "./context";
 
 // AddTask 添加任务表单，是一个分步表单。

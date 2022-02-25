@@ -16,7 +16,7 @@ const RequireAuth = ({ children }: { children: JSX.Element }) => {
           justifyContent: "center",
           alignItems: "center",
           textAlign: "center",
-          border: "1px solid var(--semi-color-border)",
+          // border: "1px solid var(--semi-color-border)",
           margin: "10%",
         }}
       >

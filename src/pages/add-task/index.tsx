@@ -40,7 +40,7 @@ const AddTask = () => {
       >
         <div
           style={{
-            border: "1px solid var(--semi-color-border)",
+            // border: "1px solid var(--semi-color-border)",
             padding: "10px 20px",
           }}
         >
@@ -80,7 +80,7 @@ const AddTask = () => {
 
         <div
           style={{
-            border: "1px solid var(--semi-color-border)",
+            // border: "1px solid var(--semi-color-border)",
             padding: "0px 20px",
             width: 600,
           }}

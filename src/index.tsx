@@ -15,6 +15,7 @@ import GithubCallback from "./components/github-callback";
 import NotFound from "./pages/404";
 import Tasks from "./pages/tasks";
 import AddTask from "./pages/add-task";
+import RequireAuth from "./components/require-auth";
 
 const Index = () => {
   const [user, setUser] = useState<UserContent>(getEmptyUser());
@@ -29,7 +30,14 @@ const Index = () => {
               <Route index element={<Home />} />
               <Route path="tasks">
                 <Route index element={<Tasks />} />
-                <Route path="add" element={<AddTask />} />
+                <Route
+                  path="add"
+                  element={
+                    <RequireAuth>
+                      <AddTask />
+                    </RequireAuth>
+                  }
+                />
               </Route>
             </Route>
 

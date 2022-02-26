@@ -2,14 +2,11 @@ import { Button, Form, Space } from "@douyinfe/semi-ui";
 import { useAddTaskContext } from "../../context";
 
 const AdvanceForm = () => {
-  const { data, setData, step, setStep } = useAddTaskContext();
+  const { data, step, setStep } = useAddTaskContext();
 
   const saveValues = (values: any) => {
-    const dataCopy = data;
-    dataCopy.advance_config.is_recursion_diff = values.isRecursionDiff;
-    dataCopy.advance_config.is_ignore_array_sequence =
-      values.isIgnoreArraySequence;
-    setData(dataCopy);
+    data.advance_config.is_recursion_diff = values.isRecursionDiff;
+    data.advance_config.is_ignore_array_sequence = values.isIgnoreArraySequence;
   };
 
   return (

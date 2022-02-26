@@ -41,7 +41,6 @@ export const getEmptyFormContent = (): FormContent => {
 
 export type AddTaskContent = {
   data: FormContent;
-  setData: (value: FormContent) => void;
   step: number;
   setStep: (value: number) => void;
 };

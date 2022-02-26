@@ -59,10 +59,6 @@ const App = () => {
 
   // 尝试获取用户信息
   const getUser = async () => {
-    // 如果user信息已存在，应立即返回
-    if (user.id > 0) {
-      return;
-    }
     try {
       const jwt = localStorage.getItem(JWT);
       if (jwt) {

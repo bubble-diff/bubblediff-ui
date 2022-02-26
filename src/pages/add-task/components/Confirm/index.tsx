@@ -3,16 +3,21 @@ import {
   Descriptions,
   List,
   Space,
+  Toast,
   Typography,
 } from "@douyinfe/semi-ui";
+import { useState } from "react";
 import API from "../../../../api";
 import { JWT } from "../../../../constants";
+import { getEmptyUser, useGlobalContext } from "../../../../context";
 import { useAddTaskContext } from "../../context";
 import SwitchTag from "./switch_tag";
 
 const Confirm = () => {
   const { Title, Text } = Typography;
   const { data, step, setStep } = useAddTaskContext();
+  const { setUser } = useGlobalContext();
+  const [loading, setLoading] = useState<boolean>(false);
   const preview = [
     { key: "任务名", value: data.name },
     { key: "任务描述", value: data.description },
@@ -45,18 +50,20 @@ const Confirm = () => {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.preventDefault();
+    setLoading(true);
+    await new Promise((r) => setTimeout(r, 1000));
     try {
       const jwt = localStorage.getItem(JWT);
       const resp = await API.post("/api/v1/task", data, {
         headers: { Authorization: `Bearer ${jwt}` },
       });
-      
+      setLoading(false);
       // todo: 返回提示，跳转至其他页面
-      console.log(resp);
     } catch (err) {
       console.log(err);
-      console.log("jwt invalid, clear it...");
       localStorage.removeItem(JWT);
+      setUser(getEmptyUser());
+      setLoading(false);
     }
   };
 
@@ -90,7 +97,12 @@ const Confirm = () => {
           >
             上一步
           </Button>
-          <Button theme="solid" type="primary" onClick={handleSubmit}>
+          <Button
+            theme="solid"
+            type="primary"
+            loading={loading}
+            onClick={handleSubmit}
+          >
             提交
           </Button>
         </Space>

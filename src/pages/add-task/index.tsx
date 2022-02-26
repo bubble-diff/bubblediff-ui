@@ -9,11 +9,11 @@ import { AddTaskContext, FormContent, getEmptyFormContent } from "./context";
 
 // AddTask 添加任务表单，是一个分步表单。
 const AddTask = () => {
-  const [data, setData] = useState<FormContent>(getEmptyFormContent());
+  const [data] = useState<FormContent>(getEmptyFormContent());
   const [step, setStep] = useState<number>(0);
   const { Sider, Content } = Layout;
 
-  const renderForm = () => {
+  const renderStep = () => {
     switch (step) {
       case 0:
         return <BaseForm />;
@@ -86,8 +86,8 @@ const AddTask = () => {
           }}
         >
           <Content>
-            <AddTaskContext.Provider value={{ data, setData, step, setStep }}>
-              {renderForm()}
+            <AddTaskContext.Provider value={{ data, step, setStep }}>
+              {renderStep()}
             </AddTaskContext.Provider>
           </Content>
         </div>

@@ -2,14 +2,12 @@ import { Button, Form, Space } from "@douyinfe/semi-ui";
 import { useAddTaskContext } from "../../context";
 
 const TrafficForm = () => {
-  const { data, setData, step, setStep } = useAddTaskContext();
+  const { data, step, setStep } = useAddTaskContext();
 
   const saveValues = (values: any) => {
-    const dataCopy = data;
-    dataCopy.traffic_config.device = values.device;
-    dataCopy.traffic_config.port = values.port;
-    dataCopy.traffic_config.addr = values.addr;
-    setData(dataCopy);
+    data.traffic_config.device = values.device;
+    data.traffic_config.port = values.port;
+    data.traffic_config.addr = values.addr;
   };
 
   return (

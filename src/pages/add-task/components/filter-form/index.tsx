@@ -3,16 +3,14 @@ import { ArrayField, Button, Form, Space, Typography } from "@douyinfe/semi-ui";
 import { useAddTaskContext } from "../../context";
 
 const FilterForm = () => {
-  const { data, setData, step, setStep } = useAddTaskContext();
+  const { data, step, setStep } = useAddTaskContext();
   const { Text } = Typography;
 
   const saveValues = (values: any) => {
-    const dataCopy = data;
     if (values.httpPathFilters)
-      dataCopy.filter_config.http_path_regex_filter =
+      data.filter_config.http_path_regex_filter =
         values.httpPathFilters.slice();
-    else dataCopy.filter_config.http_path_regex_filter = undefined;
-    setData(dataCopy);
+    else data.filter_config.http_path_regex_filter = undefined;
   };
 
   return (

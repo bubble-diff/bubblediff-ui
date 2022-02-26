@@ -3,16 +3,14 @@ import { useGlobalContext } from "../../../../context";
 import { useAddTaskContext } from "../../context";
 
 const BaseForm = () => {
-  const { data, setData, step, setStep } = useAddTaskContext();
+  const { data, step, setStep } = useAddTaskContext();
   const { user } = useGlobalContext();
   const { Input, TextArea } = Form;
 
   const saveValues = (values: any) => {
-    const dataCopy = data;
-    dataCopy.name = values.name;
-    dataCopy.description = values.description;
-    dataCopy.owner = user;
-    setData(dataCopy);
+    data.name = values.name;
+    data.description = values.description;
+    data.owner = user;
   };
 
   return (

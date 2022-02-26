@@ -4,13 +4,7 @@ import React, { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import App from "./app";
 import Home from "./pages/home";
-import {
-  getEmptyMessage,
-  getEmptyUser,
-  GlobalContext,
-  MessageContent,
-  UserContent,
-} from "./context";
+import { getEmptyUser, GlobalContext, UserContent } from "./context";
 import GithubCallback from "./components/github-callback";
 import NotFound from "./pages/404";
 import Tasks from "./pages/tasks";
@@ -19,11 +13,10 @@ import RequireAuth from "./components/require-auth";
 
 const Index = () => {
   const [user, setUser] = useState<UserContent>(getEmptyUser());
-  const [message, setMessage] = useState<MessageContent>(getEmptyMessage());
 
   return (
     <React.StrictMode>
-      <GlobalContext.Provider value={{ user, setUser, message, setMessage }}>
+      <GlobalContext.Provider value={{ user, setUser }}>
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<App />}>

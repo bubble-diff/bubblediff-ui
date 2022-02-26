@@ -15,39 +15,16 @@ import {
 import { Outlet, useNavigate } from "react-router-dom";
 import UserInfo from "./components/userinfo";
 import { useEffect, useState } from "react";
-import { getEmptyMessage, MsgType, useGlobalContext } from "./context";
+import { useGlobalContext } from "./context";
 import Logo from "./assets/logo.png";
 import { RadioChangeEvent } from "@douyinfe/semi-ui/lib/es/radio";
 import API from "./api";
 import { JWT } from "./constants";
 
-const renderMessage = (msg: string, type: MsgType) => {
-  const opts = {
-    content: msg,
-    duration: 5,
-  };
-  switch (type) {
-    case MsgType.Info:
-      Toast.info(opts);
-      break;
-    case MsgType.Success:
-      Toast.success(opts);
-      break;
-    case MsgType.Warn:
-      Toast.warning(opts);
-      break;
-    case MsgType.Error:
-      Toast.error(opts);
-      break;
-    default:
-      break;
-  }
-};
-
 const App = () => {
   const { Header, Footer, Content } = Layout;
   const { Text } = Typography;
-  const { user, setUser, message, setMessage } = useGlobalContext();
+  const { user, setUser } = useGlobalContext();
   const navigate = useNavigate();
   const [tab, setTab] = useState("");
 
@@ -68,38 +45,24 @@ const App = () => {
           },
         });
         console.log(data);
-        // 设置user context
         setUser({
           id: data.id,
           login: data.login,
           avatar_url: data.avatar_url,
           email: data.email,
         });
-        // 设置msg context
-        setMessage({ msgType: MsgType.Success, msg: "登录成功！" });
       }
     } catch (err) {
       console.log(err);
       console.log("jwt maybe invalid, clear it...");
       localStorage.removeItem(JWT);
-      setMessage({
-        msgType: MsgType.Error,
-        msg: "当前会话已过期，请重新登录。",
-      });
+      Toast.error({ content: "当前会话已过期，请重新登录。", duration: 3 });
     }
   };
 
   useEffect(() => {
     getUser();
   }, []);
-
-  useEffect(() => {
-    // 消费信息，感觉这里实现不太优雅。
-    if (message.msg) {
-      renderMessage(message.msg, message.msgType);
-      setMessage(getEmptyMessage());
-    }
-  }, [message]);
 
   return (
     <Layout

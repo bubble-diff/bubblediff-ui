@@ -32,15 +32,11 @@ export const getEmptyMessage = (): MessageContent => {
 export type GlobalContent = {
   user: UserContent;
   setUser: (value: UserContent) => void;
-  message: MessageContent;
-  setMessage: (value: MessageContent) => void;
 };
 
 export const GlobalContext = createContext<GlobalContent>({
   user: getEmptyUser(),
   setUser: () => {},
-  message: getEmptyMessage(),
-  setMessage: () => {},
 });
 
 export const useGlobalContext = () => useContext(GlobalContext);

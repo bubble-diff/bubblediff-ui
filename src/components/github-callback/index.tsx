@@ -1,15 +1,13 @@
-import { Spin } from "@douyinfe/semi-ui";
+import { Spin, Toast } from "@douyinfe/semi-ui";
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import API from "../../api";
 import { JWT } from "../../constants";
-import { MsgType, useGlobalContext } from "../../context";
 
 // GithubCallback 当组件mounted时，尝试获取jwt。
 // 获取结束后，返回至首页。首页应该显示登录成功/失败的toast提示。
 const GithubCallback = () => {
   const [searchParams] = useSearchParams();
-  const { setMessage } = useGlobalContext();
   const navigate = useNavigate();
 
   const getJwt = async () => {
@@ -20,25 +18,55 @@ const GithubCallback = () => {
       return;
     }
 
-    const code = searchParams.get("code");
-    const error = searchParams.get("error");
-    const desc = searchParams.get("description");
-    // 检查参数是否合法
-    if (!code || error) {
-      console.log(error);
-      console.log(desc);
-      setMessage({ msgType: MsgType.Error, msg: `登录失败！${desc}` });
+    const code = searchParams.get("code") || "";
+    const error = searchParams.get("error") || "";
+    const desc = searchParams.get("description") || "";
+
+    if (error) {
+      Toast.error({
+        content: `${error}`,
+        duration: 3,
+      });
+      if (desc) {
+        Toast.error({
+          content: `${desc}`,
+          duration: 3,
+        });
+      }
+    } else if (!code) {
+      Toast.error({
+        content: "授权码不存在",
+        duration: 3,
+      });
     } else {
       try {
         const { data } = await API.get("/login", { params: { code: code } });
         localStorage.setItem(JWT, data.token);
-      } catch (err) {
-        // todo: 处理不同类型的error
-        console.log(err);
-      } finally {
-        navigate("/", { replace: true });
+        Toast.success({
+          content: "登录成功",
+          duration: 3,
+        });
+      } catch (err: any) {
+        Toast.error({
+          content: `${err}`,
+          duration: 3,
+        });
+        if (err?.response?.status === 401) {
+          Toast.error({
+            content: "无效的授权码",
+            duration: 3,
+          });
+        } else {
+          Toast.warning({
+            content: "请检查后端服务是否启动",
+            duration: 3,
+          });
+        }
       }
     }
+    // fixme: 这里只能等待一下Toast才能渲染
+    await new Promise((r) => setTimeout(r, 100));
+    navigate("/", { replace: true });
   };
 
   useEffect(() => {

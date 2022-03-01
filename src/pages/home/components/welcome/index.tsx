@@ -27,7 +27,7 @@ const Welcome = () => {
           borderRadius: "var(--semi-border-radius-full)",
         }}
         onClick={() => {
-          navigate("/task/new", { replace: true });
+          navigate("/tasks/new", { replace: true });
         }}
       >
         创建Diff任务

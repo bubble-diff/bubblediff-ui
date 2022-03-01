@@ -6,7 +6,7 @@ const Welcome = () => {
   const { Paragraph, Title } = Typography;
   const navigate = useNavigate();
   const onClick = () => {
-    navigate("/task/new", { replace: true });
+    navigate("/tasks/new", { replace: true });
   };
 
   return (

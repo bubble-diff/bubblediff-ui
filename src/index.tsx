@@ -10,6 +10,7 @@ import NotFound from "./pages/404";
 import Tasks from "./pages/tasks";
 import AddTask from "./pages/add-task";
 import RequireAuth from "./components/require-auth";
+import TaskPanel from "./pages/task-panel";
 
 const Index = () => {
   const [user, setUser] = useState<UserContent>(getEmptyUser());
@@ -21,9 +22,36 @@ const Index = () => {
           <Routes>
             <Route path="/" element={<App />}>
               <Route index element={<Home />} />
-              
-              <Route path="task">
-                <Route path=":id" element={<p>这是任务管理面板页面</p>} />
+
+              {/* <Route path="task">
+                <Route
+                  path=":id"
+                  element={
+                    <RequireAuth>
+                      <TaskPanel />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path="new"
+                  element={
+                    <RequireAuth>
+                      <AddTask />
+                    </RequireAuth>
+                  }
+                />
+              </Route> */}
+
+              <Route path="tasks">
+                <Route index element={<Tasks />} />
+                <Route
+                  path=":id"
+                  element={
+                    <RequireAuth>
+                      <TaskPanel />
+                    </RequireAuth>
+                  }
+                />
                 <Route
                   path="new"
                   element={
@@ -33,8 +61,6 @@ const Index = () => {
                   }
                 />
               </Route>
-
-              <Route path="tasks" element={<Tasks />} />
             </Route>
 
             <Route path="/callback">

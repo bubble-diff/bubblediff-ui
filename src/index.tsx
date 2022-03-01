@@ -21,10 +21,11 @@ const Index = () => {
           <Routes>
             <Route path="/" element={<App />}>
               <Route index element={<Home />} />
-              <Route path="tasks">
-                <Route index element={<Tasks />} />
+              
+              <Route path="task">
+                <Route path=":id" element={<p>这是任务管理面板页面</p>} />
                 <Route
-                  path="add"
+                  path="new"
                   element={
                     <RequireAuth>
                       <AddTask />
@@ -32,6 +33,8 @@ const Index = () => {
                   }
                 />
               </Route>
+
+              <Route path="tasks" element={<Tasks />} />
             </Route>
 
             <Route path="/callback">

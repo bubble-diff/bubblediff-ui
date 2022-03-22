@@ -7,6 +7,7 @@ import {
   Typography,
 } from "@douyinfe/semi-ui";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import API from "../../../../api";
 import { JWT } from "../../../../constants";
 import { getEmptyUser, useGlobalContext } from "../../../../context";
@@ -15,6 +16,7 @@ import SwitchTag from "./switch_tag";
 
 const Confirm = () => {
   const { Title, Text } = Typography;
+  const navigate = useNavigate();
   const { data, step, setStep } = useAddTaskContext();
   const { setUser } = useGlobalContext();
   const [loading, setLoading] = useState<boolean>(false);
@@ -59,6 +61,8 @@ const Confirm = () => {
       });
       setLoading(false);
       // todo: 返回提示，跳转至其他页面
+      Toast.info("提交成功");
+      navigate(`/tasks/${resp.data.id}`, { replace: true });
     } catch (err) {
       console.log(err);
       localStorage.removeItem(JWT);

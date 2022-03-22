@@ -42,6 +42,7 @@ const GithubCallback = () => {
       try {
         const { data } = await API.get("/login", { params: { code: code } });
         localStorage.setItem(JWT, data.token);
+        console.log(data.token); // just for debug
         Toast.success({
           content: "登录成功",
           duration: 3,

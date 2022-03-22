@@ -12,71 +12,101 @@ import {
   Space,
   Avatar,
   Typography,
+  Toast,
 } from "@douyinfe/semi-ui";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import API from "../../../../api";
+import { JWT } from "../../../../constants";
+import { getEmptyUser, useGlobalContext } from "../../../../context";
 
 const TaskList = () => {
   const { Header, Content } = Layout;
   const { Title } = Typography;
+  const [tasks, setTasks] = useState<any[]>([]);
+  const [isListLoading, setIsListLoading] = useState(true);
+  const navigate = useNavigate();
+  const { setUser } = useGlobalContext();
 
-  const mockData = [
-    {
-      taskname: "这是一个很长的任务名aaaaa",
-      username: "peanutzhen",
-      total: "1480",
-      success: "98%",
-      diffs: "2%",
-    },
-    {
-      taskname: "抖音测试",
-      username: "peanutzhen",
-      total: "1480",
-      success: "98%",
-      diffs: "2%",
-    },
-    {
-      taskname: "抖音测试",
-      username: "peanutzhen",
-      total: "1480",
-      success: "98%",
-      diffs: "2%",
-    },
-    {
-      taskname: "抖音测试",
-      username: "peanutzhen",
-      total: "1480",
-      success: "98%",
-      diffs: "2%",
-    },
-    {
-      taskname: "抖音测试",
-      username: "peanutzhen",
-      total: "1480",
-      success: "98%",
-      diffs: "2%",
-    },
-    {
-      taskname: "抖音测试",
-      username: "peanutzhen",
-      total: "1480",
-      success: "98%",
-      diffs: "2%",
-    },
-    {
-      taskname: "抖音测试",
-      username: "peanutzhensasdajsdaksjdahskjdashk",
-      total: "100000",
-      success: "98%",
-      diffs: "2%",
-    },
-  ];
-
-  const listItemStyle = {
-    border: "2px solid var(--semi-color-border)",
-    backgroundColor: "var(--semi-color-bg-2)",
-    borderRadius: "3px",
-    padding: "20px 0px 0px 20px",
-    margin: "0px 0px 10px 0px",
+  const getTaskList = async () => {
+    try {
+      const jwt = localStorage.getItem(JWT);
+      if (jwt) {
+        const { data } = await API.get("/api/v1/tasks", {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        });
+        if (data.err) {
+          Toast.error(data.err);
+        } else {
+          setTasks(data.tasks);
+        }
+      }
+    } catch (err) {
+      console.log(err);
+      console.log("jwt maybe invalid, clear it...");
+      localStorage.removeItem(JWT);
+      setUser(getEmptyUser());
+    }
+    setIsListLoading(false);
   };
+
+  useEffect(() => {
+    getTaskList();
+  }, []);
+
+  // const mockData = [
+  //   {
+  //     taskname: "这是一个很长的任务名aaaaa",
+  //     username: "peanutzhen",
+  //     total: "1480",
+  //     success: "98%",
+  //     diffs: "2%",
+  //   },
+  //   {
+  //     taskname: "抖音测试",
+  //     username: "peanutzhen",
+  //     total: "1480",
+  //     success: "98%",
+  //     diffs: "2%",
+  //   },
+  //   {
+  //     taskname: "抖音测试",
+  //     username: "peanutzhen",
+  //     total: "1480",
+  //     success: "98%",
+  //     diffs: "2%",
+  //   },
+  //   {
+  //     taskname: "抖音测试",
+  //     username: "peanutzhen",
+  //     total: "1480",
+  //     success: "98%",
+  //     diffs: "2%",
+  //   },
+  //   {
+  //     taskname: "抖音测试",
+  //     username: "peanutzhen",
+  //     total: "1480",
+  //     success: "98%",
+  //     diffs: "2%",
+  //   },
+  //   {
+  //     taskname: "抖音测试",
+  //     username: "peanutzhen",
+  //     total: "1480",
+  //     success: "98%",
+  //     diffs: "2%",
+  //   },
+  //   {
+  //     taskname: "抖音测试",
+  //     username: "peanutzhensasdajsdaksjdahskjdashk",
+  //     total: "100000",
+  //     success: "98%",
+  //     diffs: "2%",
+  //   },
+  // ];
 
   return (
     <div>
@@ -111,35 +141,44 @@ const TaskList = () => {
             </Nav>
           </div>
         </Header>
+
         <Content style={{ minHeight: "50vh" }}>
           <List
             grid={{ gutter: 12, span: 6 }}
-            dataSource={mockData}
+            dataSource={tasks}
             renderItem={(item) => (
-              <List.Item style={listItemStyle}>
+              <List.Item
+                style={{
+                  border: "2px solid var(--semi-color-border)",
+                  backgroundColor: "var(--semi-color-bg-2)",
+                  borderRadius: "3px",
+                  padding: "20px 0px 0px 20px",
+                  margin: "0px 0px 10px 0px",
+                }}
+              >
                 <div>
                   <Title heading={6}>
-                    {item.taskname.substring(0, 10)}
-                    {item.taskname.length > 10 && "..."}
+                    {item.name.substring(0, 10)}
+                    {item.name.length > 10 && "..."}
                   </Title>
 
                   <Space style={{ marginTop: "4px" }}>
-                    <Avatar size="extra-extra-small">U</Avatar>
+                    <Avatar size="extra-extra-small" src={item.owner.avatar_url} />
                     <span>
-                      {item.username.substring(0, 20)}
-                      {item.username.length > 20 && "..."}
+                      {item.owner.login.substring(0, 20)}
+                      {item.owner.login.length > 20 && "..."}
                     </span>
                   </Space>
 
                   <Descriptions align="left" size="small" row>
                     <Descriptions.Item itemKey="请求总数">
-                      {item.total}
+                      {item.total_req}
                     </Descriptions.Item>
                     <Descriptions.Item itemKey="请求成功率">
-                      {item.success}
+                      {item.suc_rate}
                     </Descriptions.Item>
                     <Descriptions.Item itemKey="Diffs率">
-                      {item.diffs}
+                      {item.diff_rate}
                     </Descriptions.Item>
                   </Descriptions>
                   <div
@@ -151,7 +190,13 @@ const TaskList = () => {
                   >
                     <ButtonGroup theme="borderless" style={{ marginTop: 8 }}>
                       <Button>配置</Button>
-                      <Button>管理面板</Button>
+                      <Button
+                        onClick={() => {
+                          navigate(`/tasks/${item.id}`, { replace: true });
+                        }}
+                      >
+                        管理面板
+                      </Button>
                     </ButtonGroup>
                   </div>
                 </div>

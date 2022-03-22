@@ -23,27 +23,15 @@ const Index = () => {
             <Route path="/" element={<App />}>
               <Route index element={<Home />} />
 
-              {/* <Route path="task">
-                <Route
-                  path=":id"
-                  element={
-                    <RequireAuth>
-                      <TaskPanel />
-                    </RequireAuth>
-                  }
-                />
-                <Route
-                  path="new"
-                  element={
-                    <RequireAuth>
-                      <AddTask />
-                    </RequireAuth>
-                  }
-                />
-              </Route> */}
-
               <Route path="tasks">
-                <Route index element={<Tasks />} />
+                <Route
+                  index
+                  element={
+                    <RequireAuth>
+                      <Tasks />
+                    </RequireAuth>
+                  }
+                />
                 <Route
                   path=":id"
                   element={

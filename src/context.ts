@@ -12,22 +12,22 @@ export const getEmptyUser = (): UserContent => {
   return { id: -1, login: "", avatar_url: "", email: "" };
 };
 
-export enum MsgType {
-  Info,
-  Success,
-  Warn,
-  Error,
-}
+// export enum MsgType {
+//   Info,
+//   Success,
+//   Warn,
+//   Error,
+// }
 
-// MessageContent 用于表示App的提示消息
-export type MessageContent = {
-  msgType: MsgType;
-  msg: string;
-};
+// // MessageContent 用于表示App的提示消息
+// export type MessageContent = {
+//   msgType: MsgType;
+//   msg: string;
+// };
 
-export const getEmptyMessage = (): MessageContent => {
-  return { msgType: MsgType.Info, msg: "" };
-};
+// export const getEmptyMessage = (): MessageContent => {
+//   return { msgType: MsgType.Info, msg: "" };
+// };
 
 export type GlobalContent = {
   user: UserContent;

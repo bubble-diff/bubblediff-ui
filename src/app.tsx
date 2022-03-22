@@ -2,8 +2,6 @@ import {
   Layout,
   Nav,
   Button,
-  RadioGroup,
-  Radio,
   Typography,
   Toast,
 } from "@douyinfe/semi-ui";
@@ -11,13 +9,14 @@ import {
   IconBytedanceLogo,
   IconGithubLogo,
   IconLink,
+  IconHome,
+  IconListView,
 } from "@douyinfe/semi-icons";
 import { Outlet, useNavigate } from "react-router-dom";
 import UserInfo from "./components/userinfo";
 import { useEffect, useState } from "react";
 import { useGlobalContext } from "./context";
 import Logo from "./assets/logo.png";
-import { RadioChangeEvent } from "@douyinfe/semi-ui/lib/es/radio";
 import API from "./api";
 import { JWT } from "./constants";
 
@@ -26,13 +25,7 @@ const App = () => {
   const { Text } = Typography;
   const { user, setUser } = useGlobalContext();
   const navigate = useNavigate();
-  const [tab, setTab] = useState("");
-
-  // 导航栏callback函数
-  const onChange = (e: RadioChangeEvent) => {
-    setTab(e.target.value);
-    navigate(`/${e.target.value}`, { replace: true });
-  };
+  const [tab, setTab] = useState(["home"]);
 
   // 尝试获取用户信息
   const getUser = async () => {
@@ -73,22 +66,29 @@ const App = () => {
     >
       <Header style={{ backgroundColor: "var(--semi-color-bg-1)" }}>
         <div>
-          <Nav mode="horizontal">
+          <Nav
+            mode="horizontal"
+            defaultSelectedKeys={tab}
+            onClick={(data) => {
+              setTab([data.itemKey.toString()]);
+              if (data.itemKey === "home") {
+                navigate("/", { replace: true });
+                return;
+              }
+              navigate(`/${data.itemKey}`, { replace: true });
+            }}
+          >
             <Nav.Header
               logo={<img src={Logo} alt="logo" />}
               text="BubbleDiff"
             />
 
-            <RadioGroup
-              type="button"
-              buttonSize="middle"
-              value={tab}
-              onChange={onChange}
-              style={{ marginRight: "12px" }}
-            >
-              <Radio value={""}>首页</Radio>
-              <Radio value={"tasks"}>任务列表</Radio>
-            </RadioGroup>
+            <Nav.Item itemKey={"home"} text={"首页"} icon={<IconHome />} />
+            <Nav.Item
+              itemKey={"tasks"}
+              text={"任务列表"}
+              icon={<IconListView />}
+            />
 
             <Nav.Footer>
               <a href="https://github.com/bubble-diff">

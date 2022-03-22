@@ -11,6 +11,7 @@ import Tasks from "./pages/tasks";
 import AddTask from "./pages/add-task";
 import RequireAuth from "./components/require-auth";
 import TaskPanel from "./pages/task-panel";
+import UpdateTask from "./pages/update-task";
 
 const Index = () => {
   const [user, setUser] = useState<UserContent>(getEmptyUser());
@@ -32,14 +33,26 @@ const Index = () => {
                     </RequireAuth>
                   }
                 />
-                <Route
-                  path=":id"
-                  element={
-                    <RequireAuth>
-                      <TaskPanel />
-                    </RequireAuth>
-                  }
-                />
+
+                <Route path=":id">
+                  <Route
+                    index
+                    element={
+                      <RequireAuth>
+                        <TaskPanel />
+                      </RequireAuth>
+                    }
+                  />
+                  <Route
+                    path="update"
+                    element={
+                      <RequireAuth>
+                        <UpdateTask />
+                      </RequireAuth>
+                    }
+                  />
+                </Route>
+
                 <Route
                   path="new"
                   element={

@@ -14,7 +14,7 @@ import {
   Typography,
 } from "@douyinfe/semi-ui";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import API from "../../api";
 import { JWT } from "../../constants";
 import { getEmptyUser, useGlobalContext } from "../../context";
@@ -27,9 +27,11 @@ const SwitchTag = (props: { on: boolean | undefined }) => {
 const TaskPanel = () => {
   const { Text } = Typography;
   const { id } = useParams();
+  const navigate = useNavigate();
   const [isTaskDetailLoading, setIsTaskDetailLoading] = useState(true);
   const [isTableDataLoading, setIsTableDataLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const { setUser } = useGlobalContext();
   const [taskDetail, setTaskDetail] = useState({
     name: undefined,
@@ -195,7 +197,13 @@ const TaskPanel = () => {
         </Skeleton>
 
         <Space style={{ display: "flex", justifyContent: "end" }}>
-          <Button>修改配置</Button>
+          <Button
+            onClick={() => {
+              navigate(`/tasks/${id}/update`, { replace: true });
+            }}
+          >
+            修改配置
+          </Button>
           <Button
             onClick={() => {
               setIsModalVisible(true);
@@ -203,7 +211,13 @@ const TaskPanel = () => {
           >
             查看配置详情
           </Button>
-          <Button type="danger" theme="solid">
+          <Button
+            type="danger"
+            theme="solid"
+            onClick={() => {
+              setIsDeleteModalVisible(true);
+            }}
+          >
             删除任务
           </Button>
         </Space>
@@ -256,6 +270,7 @@ const TaskPanel = () => {
         />
       </div>
 
+      {/* 任务配置详情弹窗 */}
       <Modal
         header={null}
         visible={isModalVisible}
@@ -293,6 +308,38 @@ const TaskPanel = () => {
             margin: "10px",
           }}
         />
+      </Modal>
+
+      {/* 删除任务弹窗 */}
+      <Modal
+        header={null}
+        visible={isDeleteModalVisible}
+        onOk={() => {
+          setIsDeleteModalVisible(false);
+        }}
+        onCancel={() => {
+          setIsDeleteModalVisible(false);
+        }}
+        footer={
+          <div style={{ textAlign: "center" }}>
+            <Button
+              type="danger"
+              theme="solid"
+              onClick={() => {
+                setIsDeleteModalVisible(false);
+              }}
+              style={{
+                width: 240,
+                margin: "4px 50px",
+              }}
+            >
+              继续删除
+            </Button>
+          </div>
+        }
+      >
+        <h3 style={{ textAlign: "center", fontSize: 24, margin: 40 }}>警告</h3>
+        <p>真的要删除吗？无法恢复</p>
       </Modal>
     </div>
   );

@@ -163,7 +163,10 @@ const TaskList = () => {
                   </Title>
 
                   <Space style={{ marginTop: "4px" }}>
-                    <Avatar size="extra-extra-small" src={item.owner.avatar_url} />
+                    <Avatar
+                      size="extra-extra-small"
+                      src={item.owner.avatar_url}
+                    />
                     <span>
                       {item.owner.login.substring(0, 20)}
                       {item.owner.login.length > 20 && "..."}
@@ -189,7 +192,13 @@ const TaskList = () => {
                     }}
                   >
                     <ButtonGroup theme="borderless" style={{ marginTop: 8 }}>
-                      <Button>配置</Button>
+                      <Button
+                        onClick={() => {
+                          navigate(`/tasks/${item.id}/update`, { replace: true });
+                        }}
+                      >
+                        配置
+                      </Button>
                       <Button
                         onClick={() => {
                           navigate(`/tasks/${item.id}`, { replace: true });

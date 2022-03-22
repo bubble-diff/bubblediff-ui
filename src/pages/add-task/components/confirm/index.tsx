@@ -61,8 +61,14 @@ const Confirm = () => {
       });
       setLoading(false);
       // todo: 返回提示，跳转至其他页面
-      Toast.info("提交成功");
-      navigate(`/tasks/${resp.data.id}`, { replace: true });
+      if (resp.data.err) {
+        console.log(resp.data.err);
+        Toast.info("提交失败");
+        navigate(`/tasks`, { replace: true });
+      } else {
+        Toast.info("提交成功");
+        navigate(`/tasks/${resp.data.id}`, { replace: true });
+      }
     } catch (err) {
       console.log(err);
       localStorage.removeItem(JWT);

@@ -61,8 +61,14 @@ const Confirm = () => {
         headers: { Authorization: `Bearer ${jwt}` },
       });
       setLoading(false);
-      Toast.info("提交成功");
-      navigate(`/tasks/${id}`, { replace: true });
+      if (resp.data.err) {
+        console.log(resp.data.err);
+        Toast.info("提交失败");
+        navigate(`/tasks`, { replace: true });
+      } else {
+        Toast.info("提交成功");
+        navigate(`/tasks/${id}`, { replace: true });
+      }
     } catch (err) {
       console.log(err);
       localStorage.removeItem(JWT);

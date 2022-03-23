@@ -28,6 +28,8 @@ const TaskPanel = () => {
   const { Text } = Typography;
   const { id } = useParams();
   const navigate = useNavigate();
+  // 启停diff按钮加载状态
+  const [isDiffBtnLoading, setIsDiffBtnLoading] = useState(false);
   // 删除按钮加载状态
   const [isDelBtnLoading, setIsDelBtnLoading] = useState(false);
   // 加载任务详情状态
@@ -44,7 +46,7 @@ const TaskPanel = () => {
     name: undefined,
     description: undefined,
     owner: getEmptyUser(),
-    is_running: undefined,
+    is_running: false,
     traffic_config: { device: undefined, port: undefined, addr: undefined },
     filter_config: { http_path_regex_filter: undefined },
     advance_config: {
@@ -52,6 +54,56 @@ const TaskPanel = () => {
       is_ignore_array_sequence: undefined,
     },
   });
+
+  // 启停diff
+  const startOrStopDiff = async () => {
+    setIsDiffBtnLoading(true);
+    
+    await new Promise((r) => setTimeout(r, 1000));
+
+    try {
+      const jwt = localStorage.getItem(JWT);
+      if (jwt) {
+        if (taskDetail.is_running) {
+          // 停止diff
+          const { data } = await API.get(`/api/v1/task/${id}/stop`, {
+            headers: {
+              Authorization: `Bearer ${jwt}`,
+            },
+          });
+          if (data.err) {
+            console.log(data.err);
+            Toast.error("停止失败");
+          } else {
+            taskDetail.is_running = false;
+            Toast.success("停止成功");
+          }
+        } else {
+          // 开始diff
+          const { data } = await API.get(`/api/v1/task/${id}/start`, {
+            headers: {
+              Authorization: `Bearer ${jwt}`,
+            },
+          });
+          if (data.err) {
+            console.log(data.err);
+            Toast.error("启动失败");
+          } else {
+            taskDetail.is_running = true;
+            Toast.success("启动成功");
+          }
+        }
+      }
+    } catch (err) {
+      console.log(err);
+      console.log("jwt maybe invalid, clear it...");
+      localStorage.removeItem(JWT);
+      setUser(getEmptyUser());
+      Toast.error({ content: "当前会话已过期，请重新登录。", duration: 3 });
+    }
+
+    setIsDiffBtnLoading(false);
+  };
 
   // 删除任务动作
   const deleteTask = async () => {
@@ -290,7 +342,14 @@ const TaskPanel = () => {
               justifyContent: "flex-end",
             }}
           >
-            <Button theme="solid">开始任务</Button>
+            <Button
+              theme="solid"
+              loading={isDiffBtnLoading}
+              type={taskDetail.is_running ? "danger" : "primary"}
+              onClick={startOrStopDiff}
+            >
+              {taskDetail.is_running ? "停止Diff" : "开始Diff"}
+            </Button>
             <Button>刷新记录</Button>
             <Button type="danger">清除所有记录</Button>
           </Space>

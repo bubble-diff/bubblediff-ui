@@ -28,6 +28,7 @@ const TaskPanel = () => {
   const { Text } = Typography;
   const { id } = useParams();
   const navigate = useNavigate();
+  const [isDelBtnLoading, setIsDelBtnLoading] = useState(false);
   const [isTaskDetailLoading, setIsTaskDetailLoading] = useState(true);
   const [isTableDataLoading, setIsTableDataLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -45,6 +46,37 @@ const TaskPanel = () => {
       is_ignore_array_sequence: undefined,
     },
   });
+
+  const deleteTask = async () => {
+    setIsDelBtnLoading(true);
+
+    try {
+      const jwt = localStorage.getItem(JWT);
+      if (jwt) {
+        const { data } = await API.delete(`/api/v1/task/${id}`, {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        });
+        if (data.err) {
+          console.log(data.err);
+          Toast.error("删除失败");
+        } else {
+          Toast.success("删除成功");
+        }
+      }
+    } catch (err) {
+      console.log(err);
+      console.log("jwt maybe invalid, clear it...");
+      localStorage.removeItem(JWT);
+      setUser(getEmptyUser());
+      Toast.error({ content: "当前会话已过期，请重新登录。", duration: 3 });
+    }
+
+    setIsDelBtnLoading(false);
+    setIsDeleteModalVisible(false);
+    navigate("/tasks", { replace: true });
+  };
 
   const getTaskDetail = async () => {
     try {
@@ -325,9 +357,8 @@ const TaskPanel = () => {
             <Button
               type="danger"
               theme="solid"
-              onClick={() => {
-                setIsDeleteModalVisible(false);
-              }}
+              loading={isDelBtnLoading}
+              onClick={deleteTask}
               style={{
                 width: 240,
                 margin: "4px 50px",

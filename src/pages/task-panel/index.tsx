@@ -28,12 +28,18 @@ const TaskPanel = () => {
   const { Text } = Typography;
   const { id } = useParams();
   const navigate = useNavigate();
+  // 删除按钮加载状态
   const [isDelBtnLoading, setIsDelBtnLoading] = useState(false);
+  // 加载任务详情状态
   const [isTaskDetailLoading, setIsTaskDetailLoading] = useState(true);
+  // 加载表格数据状态
   const [isTableDataLoading, setIsTableDataLoading] = useState(true);
+  // 配置详情弹窗可视状态
   const [isModalVisible, setIsModalVisible] = useState(false);
+  // 删除警告可视状态
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const { setUser } = useGlobalContext();
+  // 任务信息
   const [taskDetail, setTaskDetail] = useState({
     name: undefined,
     description: undefined,
@@ -47,6 +53,7 @@ const TaskPanel = () => {
     },
   });
 
+  // 删除任务动作
   const deleteTask = async () => {
     setIsDelBtnLoading(true);
 
@@ -78,6 +85,7 @@ const TaskPanel = () => {
     navigate("/tasks", { replace: true });
   };
 
+  // 获取任务信息动作
   const getTaskDetail = async () => {
     try {
       const jwt = localStorage.getItem(JWT);

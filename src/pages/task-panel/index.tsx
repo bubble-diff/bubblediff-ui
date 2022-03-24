@@ -1,6 +1,7 @@
-import { IconSearch } from "@douyinfe/semi-icons";
+import { IconCopy, IconSearch } from "@douyinfe/semi-icons";
 import {
   Avatar,
+  Badge,
   Button,
   Descriptions,
   Input,
@@ -26,6 +27,7 @@ const SwitchTag = (props: { on: boolean | undefined }) => {
 
 const TaskPanel = () => {
   const { Text } = Typography;
+  const { Column } = Table;
   const { id } = useParams();
   const navigate = useNavigate();
   // 启停diff按钮加载状态
@@ -385,7 +387,6 @@ const TaskPanel = () => {
         </div>
 
         <Table
-          columns={columns}
           dataSource={tableData}
           // pagination={false}
           loading={isTableDataLoading}
@@ -395,7 +396,72 @@ const TaskPanel = () => {
             // width: "90%",
             // margin: "10px",
           }}
-        />
+        >
+          <Column
+            title=""
+            width={20}
+            render={(text, record, index) => {
+              return <Badge count={index + 1} />;
+            }}
+          />
+          <Column
+            title="ID"
+            dataIndex="cos_key"
+            width={150}
+            render={(text, record, index) => {
+              return (
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <p>
+                    {text.substring(0, 10)}
+                    {text.length > 10 && "..."}
+                  </p>
+
+                  <IconCopy
+                    size="small"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => {
+                      try {
+                        navigator.clipboard.writeText(text);
+                        Toast.success("复制成功!");
+                      } catch (err) {
+                        Toast.error("复制失败!");
+                      }
+                    }}
+                  />
+                </div>
+              );
+            }}
+          />
+          <Column
+            title="路径"
+            dataIndex="path"
+            width={200}
+            render={(text, record, index) => {
+              return (
+                <Tag
+                  style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    try {
+                      navigator.clipboard.writeText(text);
+                      Toast.success("复制成功!");
+                    } catch (err) {
+                      Toast.error("复制失败!");
+                    }
+                  }}
+                >
+                  {text}
+                </Tag>
+              );
+            }}
+          />
+          <Column title="差异率" dataIndex="diff_rate" width={80}/>
+          <Column
+            title="操作"
+            render={(text, record, index) => {
+              return <Button size="small" onClick={() => {}}>查看</Button>;
+            }}
+          />
+        </Table>
       </div>
 
       {/* 任务配置详情弹窗 */}

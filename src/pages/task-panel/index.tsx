@@ -35,7 +35,9 @@ const TaskPanel = () => {
   // 加载任务详情状态
   const [isTaskDetailLoading, setIsTaskDetailLoading] = useState(true);
   // 加载表格数据状态
-  const [isTableDataLoading, setIsTableDataLoading] = useState(true);
+  const [isTableDataLoading, setIsTableDataLoading] = useState(false);
+  // 表格数据
+  const [tableData, setTableData] = useState<any[]>([]);
   // 配置详情弹窗可视状态
   const [isModalVisible, setIsModalVisible] = useState(false);
   // 删除警告可视状态
@@ -58,7 +60,7 @@ const TaskPanel = () => {
   // 启停diff
   const startOrStopDiff = async () => {
     setIsDiffBtnLoading(true);
-    
+
     await new Promise((r) => setTimeout(r, 1000));
 
     try {
@@ -164,35 +166,56 @@ const TaskPanel = () => {
     setIsTaskDetailLoading(false);
   };
 
+  const getTaskRecordsMeta = async () => {
+    setIsTableDataLoading(true);
+    await new Promise((r) => setTimeout(r, 2000));
+    try {
+      const jwt = localStorage.getItem(JWT);
+      if (jwt) {
+        const { data } = await API.get(`/api/v1/records/${id}`, {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        });
+        if (data.err) {
+          console.log(data.err);
+          Toast.error("获取record失败！");
+        } else {
+          setTableData(data.metas);
+        }
+      }
+    } catch (err) {
+      console.log(err);
+      console.log("jwt maybe invalid, clear it...");
+      localStorage.removeItem(JWT);
+      setUser(getEmptyUser());
+      Toast.error({ content: "当前会话已过期，请重新登录。", duration: 3 });
+    }
+    setIsTableDataLoading(false);
+  };
+
   useEffect(() => {
     getTaskDetail();
   }, []);
 
+  useEffect(() => {
+    getTaskRecordsMeta();
+  }, []);
+
   const columns = [
     {
-      title: "record_id",
-      dataIndex: "record_id",
-      width: 100,
+      title: "ID",
+      dataIndex: "cos_key",
     },
     {
       title: "路径",
       dataIndex: "path",
     },
     {
-      title: "diff率",
-      dataIndex: "diffRate",
+      title: "差异百分比",
+      dataIndex: "diff_rate",
     },
   ];
-
-  const tableData = [];
-  for (let i = 1; i <= 100; i++) {
-    tableData.push({
-      key: `${i}`,
-      record_id: i,
-      path: "/userinfo",
-      diffRate: "0%",
-    });
-  }
 
   // 任务概要信息数据
   const descriptionData = [
@@ -350,7 +373,13 @@ const TaskPanel = () => {
             >
               {taskDetail.is_running ? "停止Diff" : "开始Diff"}
             </Button>
-            <Button>刷新记录</Button>
+            <Button
+              onClick={() => {
+                getTaskRecordsMeta();
+              }}
+            >
+              刷新记录
+            </Button>
             <Button type="danger">清除所有记录</Button>
           </Space>
         </div>
@@ -359,7 +388,7 @@ const TaskPanel = () => {
           columns={columns}
           dataSource={tableData}
           // pagination={false}
-          // loading={true}
+          loading={isTableDataLoading}
           style={{
             boxShadow: "var(--semi-shadow-elevated)",
             borderRadius: "4px",

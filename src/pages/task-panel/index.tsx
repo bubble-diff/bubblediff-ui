@@ -18,11 +18,14 @@ import {
 } from "@douyinfe/semi-ui";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import SyntaxHighlighter from "react-syntax-highlighter";
+import { Light } from "react-syntax-highlighter";
 import { githubGist } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import API from "../../api";
 import { JWT } from "../../constants";
 import { getEmptyUser, useGlobalContext } from "../../context";
+import diff from "react-syntax-highlighter/dist/esm/languages/hljs/diff";
+import json from "react-syntax-highlighter/dist/esm/languages/hljs/json";
+import http from "react-syntax-highlighter/dist/esm/languages/hljs/http";
 
 const SwitchTag = (props: { on: boolean | undefined }) => {
   if (props.on) return <Tag color="green"> On </Tag>;
@@ -325,6 +328,10 @@ const TaskPanel = () => {
       ),
     },
   ];
+
+  Light.registerLanguage("diff", diff);
+  Light.registerLanguage("json", json);
+  Light.registerLanguage("http", http);
 
   return (
     <div
@@ -634,43 +641,43 @@ const TaskPanel = () => {
               <Tag style={{ marginBottom: "5px" }}>{record.cos_key}</Tag>
               <Collapse>
                 <Collapse.Panel header="Http请求" itemKey="1">
-                  <SyntaxHighlighter
-                    language="diff"
+                  <Light
+                    language="http"
                     style={githubGist}
                     showLineNumbers={true}
                   >
                     {record.old_req}
-                  </SyntaxHighlighter>
+                  </Light>
                 </Collapse.Panel>
 
                 <Collapse.Panel header="基准服务响应" itemKey="2">
-                  <SyntaxHighlighter
+                  <Light
                     language="json"
                     style={githubGist}
                     showLineNumbers={true}
                   >
                     {record.old_resp}
-                  </SyntaxHighlighter>
+                  </Light>
                 </Collapse.Panel>
 
                 <Collapse.Panel header="被测服务响应" itemKey="3">
-                  <SyntaxHighlighter
+                  <Light
                     language="json"
                     style={githubGist}
                     showLineNumbers={true}
                   >
                     {record.new_resp}
-                  </SyntaxHighlighter>
+                  </Light>
                 </Collapse.Panel>
 
                 <Collapse.Panel header="差异比对结果" itemKey="4">
-                  <SyntaxHighlighter
+                  <Light
                     language="diff"
                     style={githubGist}
                     showLineNumbers={true}
                   >
                     {record.diff}
-                  </SyntaxHighlighter>
+                  </Light>
                 </Collapse.Panel>
               </Collapse>
             </div>

@@ -1,4 +1,3 @@
-import "reset-css";
 import ReactDOM from "react-dom";
 import React, { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";

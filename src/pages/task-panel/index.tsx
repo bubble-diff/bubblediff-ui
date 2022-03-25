@@ -3,12 +3,14 @@ import {
   Avatar,
   Badge,
   Button,
+  Collapse,
   Descriptions,
   Input,
   List,
   Modal,
   Skeleton,
   Space,
+  Spin,
   Table,
   Tag,
   Toast,
@@ -16,6 +18,8 @@ import {
 } from "@douyinfe/semi-ui";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import SyntaxHighlighter from "react-syntax-highlighter";
+import { githubGist } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import API from "../../api";
 import { JWT } from "../../constants";
 import { getEmptyUser, useGlobalContext } from "../../context";
@@ -44,6 +48,19 @@ const TaskPanel = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   // 删除警告可视状态
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  // 记录详情弹窗可视状态
+  const [isRecordModalVisible, setIsRecordModalVisible] = useState(false);
+  // 记录modal加载状态
+  const [isRecordModalLoading, setIsRecordModalLoading] = useState(false);
+  // 记录详情
+  const [record, setRecord] = useState({
+    cos_key: "",
+    old_req: "",
+    old_resp: "",
+    new_resp: "",
+    diff: "",
+    diff_rate: "",
+  });
   const { setUser } = useGlobalContext();
   // 任务信息
   const [taskDetail, setTaskDetail] = useState({
@@ -196,6 +213,38 @@ const TaskPanel = () => {
     setIsTableDataLoading(false);
   };
 
+  const getRecord = async () => {
+    setIsRecordModalLoading(true);
+    await new Promise((r) => setTimeout(r, 500));
+    try {
+      const jwt = localStorage.getItem(JWT);
+      if (jwt) {
+        const { data } = await API.get(`/api/v1/records/${record.cos_key}`, {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        });
+        if (data.err) {
+          console.log(data.err);
+          Toast.error("加载详情失败");
+        } else {
+          record.old_req = data.record.old_req;
+          record.old_resp = data.record.old_resp;
+          record.new_resp = data.record.new_resp;
+          record.diff = data.record.diff;
+          record.diff_rate = data.record.diff_rate;
+        }
+      }
+    } catch (err) {
+      console.log(err);
+      console.log("jwt maybe invalid, clear it...");
+      localStorage.removeItem(JWT);
+      setUser(getEmptyUser());
+      Toast.error({ content: "当前会话已过期，请重新登录。", duration: 3 });
+    }
+    setIsRecordModalLoading(false);
+  };
+
   useEffect(() => {
     getTaskDetail();
   }, []);
@@ -204,20 +253,11 @@ const TaskPanel = () => {
     getTaskRecordsMeta();
   }, []);
 
-  const columns = [
-    {
-      title: "ID",
-      dataIndex: "cos_key",
-    },
-    {
-      title: "路径",
-      dataIndex: "path",
-    },
-    {
-      title: "差异百分比",
-      dataIndex: "diff_rate",
-    },
-  ];
+  useEffect(() => {
+    if (isRecordModalVisible) {
+      getRecord();
+    }
+  }, [isRecordModalVisible]);
 
   // 任务概要信息数据
   const descriptionData = [
@@ -289,7 +329,7 @@ const TaskPanel = () => {
   return (
     <div
       style={{
-        margin: "40px 10%",
+        margin: "40px",
         // border: "2px solid var(--semi-color-border)",
         display: "flex",
         // alignItems: "center",
@@ -454,11 +494,22 @@ const TaskPanel = () => {
               );
             }}
           />
-          <Column title="差异率" dataIndex="diff_rate" width={80}/>
+          <Column title="差异率" dataIndex="diff_rate" width={80} />
           <Column
             title="操作"
-            render={(text, record, index) => {
-              return <Button size="small" onClick={() => {}}>查看</Button>;
+            width={100}
+            render={(text, data, index) => {
+              return (
+                <Button
+                  size="small"
+                  onClick={() => {
+                    setIsRecordModalVisible(true);
+                    record.cos_key = `${id}/${data.cos_key}`;
+                  }}
+                >
+                  查看
+                </Button>
+              );
             }}
           />
         </Table>
@@ -533,6 +584,98 @@ const TaskPanel = () => {
       >
         <h3 style={{ textAlign: "center", fontSize: 24, margin: 40 }}>警告</h3>
         <p>真的要删除吗？无法恢复</p>
+      </Modal>
+
+      {/* 记录详情弹窗 */}
+      <Modal
+        header={null}
+        visible={isRecordModalVisible}
+        onOk={() => {
+          setIsRecordModalVisible(false);
+        }}
+        onCancel={() => {
+          setIsRecordModalVisible(false);
+        }}
+        footer={
+          <div style={{ textAlign: "center" }}>
+            <Button
+              theme="solid"
+              onClick={() => {
+                setIsRecordModalVisible(false);
+              }}
+              style={{
+                width: 240,
+                margin: "4px 50px",
+              }}
+            >
+              了解
+            </Button>
+          </div>
+        }
+      >
+        <div
+          style={{
+            // border: "2px solid var(--semi-color-border)",
+            marginTop: "30px",
+          }}
+        >
+          {isRecordModalLoading ? (
+            <Spin tip="I am loading...">
+              <div style={{ minHeight: "300px" }} />
+            </Spin>
+          ) : (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+              }}
+            >
+              <Tag style={{ marginBottom: "5px" }}>{record.cos_key}</Tag>
+              <Collapse>
+                <Collapse.Panel header="Http请求" itemKey="1">
+                  <SyntaxHighlighter
+                    language="diff"
+                    style={githubGist}
+                    showLineNumbers={true}
+                  >
+                    {record.old_req}
+                  </SyntaxHighlighter>
+                </Collapse.Panel>
+
+                <Collapse.Panel header="基准服务响应" itemKey="2">
+                  <SyntaxHighlighter
+                    language="json"
+                    style={githubGist}
+                    showLineNumbers={true}
+                  >
+                    {record.old_resp}
+                  </SyntaxHighlighter>
+                </Collapse.Panel>
+
+                <Collapse.Panel header="被测服务响应" itemKey="3">
+                  <SyntaxHighlighter
+                    language="json"
+                    style={githubGist}
+                    showLineNumbers={true}
+                  >
+                    {record.new_resp}
+                  </SyntaxHighlighter>
+                </Collapse.Panel>
+
+                <Collapse.Panel header="差异比对结果" itemKey="4">
+                  <SyntaxHighlighter
+                    language="diff"
+                    style={githubGist}
+                    showLineNumbers={true}
+                  >
+                    {record.diff}
+                  </SyntaxHighlighter>
+                </Collapse.Panel>
+              </Collapse>
+            </div>
+          )}
+        </div>
       </Modal>
     </div>
   );

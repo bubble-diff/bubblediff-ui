@@ -13,6 +13,7 @@ import {
   Avatar,
   Typography,
   Toast,
+  Progress,
 } from "@douyinfe/semi-ui";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -55,58 +56,6 @@ const TaskList = () => {
   useEffect(() => {
     getTaskList();
   }, []);
-
-  // const mockData = [
-  //   {
-  //     taskname: "这是一个很长的任务名aaaaa",
-  //     username: "peanutzhen",
-  //     total: "1480",
-  //     success: "98%",
-  //     diffs: "2%",
-  //   },
-  //   {
-  //     taskname: "抖音测试",
-  //     username: "peanutzhen",
-  //     total: "1480",
-  //     success: "98%",
-  //     diffs: "2%",
-  //   },
-  //   {
-  //     taskname: "抖音测试",
-  //     username: "peanutzhen",
-  //     total: "1480",
-  //     success: "98%",
-  //     diffs: "2%",
-  //   },
-  //   {
-  //     taskname: "抖音测试",
-  //     username: "peanutzhen",
-  //     total: "1480",
-  //     success: "98%",
-  //     diffs: "2%",
-  //   },
-  //   {
-  //     taskname: "抖音测试",
-  //     username: "peanutzhen",
-  //     total: "1480",
-  //     success: "98%",
-  //     diffs: "2%",
-  //   },
-  //   {
-  //     taskname: "抖音测试",
-  //     username: "peanutzhen",
-  //     total: "1480",
-  //     success: "98%",
-  //     diffs: "2%",
-  //   },
-  //   {
-  //     taskname: "抖音测试",
-  //     username: "peanutzhensasdajsdaksjdahskjdashk",
-  //     total: "100000",
-  //     success: "98%",
-  //     diffs: "2%",
-  //   },
-  // ];
 
   return (
     <div>
@@ -173,28 +122,34 @@ const TaskList = () => {
                     </span>
                   </Space>
 
-                  <Descriptions align="left" size="small" row>
-                    <Descriptions.Item itemKey="请求总数">
-                      {item.total_req}
-                    </Descriptions.Item>
-                    <Descriptions.Item itemKey="请求成功率">
-                      {item.suc_rate}
-                    </Descriptions.Item>
-                    <Descriptions.Item itemKey="Diffs率">
-                      {item.diff_rate}
-                    </Descriptions.Item>
-                  </Descriptions>
                   <div
                     style={{
                       margin: "12px 0",
                       display: "flex",
                       justifyContent: "flex-end",
+                      alignItems: "end",
                     }}
                   >
+                    <Descriptions align="left" size="small" row>
+                      <Descriptions.Item itemKey="请求成功率">
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <Progress
+                            percent={75}
+                            type="circle"
+                            size="small"
+                            style={{ margin: "10px" }}
+                          />
+                          <p>75/100</p>
+                        </div>
+                      </Descriptions.Item>
+                    </Descriptions>
+
                     <ButtonGroup theme="borderless" style={{ marginTop: 8 }}>
                       <Button
                         onClick={() => {
-                          navigate(`/tasks/${item.id}/update`, { replace: true });
+                          navigate(`/tasks/${item.id}/update`, {
+                            replace: true,
+                          });
                         }}
                       >
                         配置
@@ -204,7 +159,7 @@ const TaskList = () => {
                           navigate(`/tasks/${item.id}`, { replace: true });
                         }}
                       >
-                        管理面板
+                        进入
                       </Button>
                     </ButtonGroup>
                   </div>

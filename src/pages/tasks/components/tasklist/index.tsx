@@ -14,6 +14,7 @@ import {
   Typography,
   Toast,
   Progress,
+  Tag,
 } from "@douyinfe/semi-ui";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -25,19 +26,26 @@ const TaskList = () => {
   const { Header, Content } = Layout;
   const { Title } = Typography;
   const [tasks, setTasks] = useState<any[]>([]);
-  const [isListLoading, setIsListLoading] = useState(true);
+  const [owner, setOwner] = useState("");
+  const [search, setSearch] = useState("");
+  const [isListLoading, setIsListLoading] = useState(false);
   const navigate = useNavigate();
-  const { setUser } = useGlobalContext();
+  const { user, setUser } = useGlobalContext();
 
-  const getTaskList = async () => {
+  const getTaskList = async (owner: string, search: string) => {
+    setIsListLoading(true);
+    await new Promise((r) => setTimeout(r, 1000));
     try {
       const jwt = localStorage.getItem(JWT);
       if (jwt) {
-        const { data } = await API.get("/api/v1/tasks", {
-          headers: {
-            Authorization: `Bearer ${jwt}`,
-          },
-        });
+        const { data } = await API.get(
+          `/api/v1/tasks?owner=${owner}&search=${search}`,
+          {
+            headers: {
+              Authorization: `Bearer ${jwt}`,
+            },
+          }
+        );
         if (data.err) {
           Toast.error(data.err);
         } else {
@@ -54,8 +62,8 @@ const TaskList = () => {
   };
 
   useEffect(() => {
-    getTaskList();
-  }, []);
+    getTaskList(owner, search);
+  }, [owner]);
 
   return (
     <div>
@@ -73,11 +81,15 @@ const TaskList = () => {
               <RadioGroup
                 type="button"
                 buttonSize="middle"
-                defaultValue={1}
+                defaultValue={""}
                 style={{ marginRight: "12px" }}
+                onChange={(e) => {
+                  setSearch("");
+                  setOwner(e.target.value);
+                }}
               >
-                <Radio value={1}>全部</Radio>
-                <Radio value={2}>我的任务</Radio>
+                <Radio value={""}>全部</Radio>
+                <Radio value={user.login}>我的任务</Radio>
               </RadioGroup>
 
               <Nav.Footer>
@@ -85,7 +97,14 @@ const TaskList = () => {
                   placeholder={"搜索任务"}
                   suffix={<IconSearch />}
                   showClear
-                ></Input>
+                  value={search}
+                  onChange={(val, e) => {
+                    setSearch(val);
+                  }}
+                  onEnterPress={(e) => {
+                    getTaskList(owner, search);
+                  }}
+                />
               </Nav.Footer>
             </Nav>
           </div>
@@ -94,6 +113,7 @@ const TaskList = () => {
         <Content style={{ minHeight: "50vh" }}>
           <List
             grid={{ gutter: 12, span: 6 }}
+            loading={isListLoading}
             dataSource={tasks}
             renderItem={(item) => (
               <List.Item
@@ -105,7 +125,7 @@ const TaskList = () => {
                   margin: "0px 0px 10px 0px",
                 }}
               >
-                <div>
+                <div style={{ width: "300px" }}>
                   <Title heading={6}>
                     {item.name.substring(0, 10)}
                     {item.name.length > 10 && "..."}
@@ -126,7 +146,7 @@ const TaskList = () => {
                     style={{
                       margin: "12px 0",
                       display: "flex",
-                      justifyContent: "flex-end",
+                      justifyContent: "space-between",
                       alignItems: "end",
                     }}
                   >
@@ -134,12 +154,20 @@ const TaskList = () => {
                       <Descriptions.Item itemKey="请求成功率">
                         <div style={{ display: "flex", alignItems: "center" }}>
                           <Progress
-                            percent={75}
+                            percent={
+                              item.total_record === 0
+                                ? 0
+                                : (item.success_record / item.total_record) *
+                                  100
+                            }
                             type="circle"
                             size="small"
                             style={{ margin: "10px" }}
                           />
-                          <p>75/100</p>
+
+                          <Tag>
+                            {item.success_record}/{item.total_record}
+                          </Tag>
                         </div>
                       </Descriptions.Item>
                     </Descriptions>

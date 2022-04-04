@@ -391,8 +391,27 @@ const TaskPanel = () => {
                 icon={<IconLink />}
                 underline
               >
-                请前往GitHub Release下载并按照指示部署
+                请前往GitHub Release下载并按照指示部署。
               </Text>
+              <Button
+                size="small"
+                onClick={() => {
+                  try {
+                    const settings = {
+                      taskid: id,
+                      interface: taskDetail.traffic_config.device,
+                      service_port: taskDetail.traffic_config.port,
+                      replay_svr_addr: process.env.REACT_APP_REPLAY_ADDR!,
+                    };
+                    navigator.clipboard.writeText(JSON.stringify(settings));
+                    Toast.success("复制成功!");
+                  } catch (err) {
+                    Toast.error("复制失败!");
+                  }
+                }}
+              >
+                复制settings.json内容
+              </Button>
             </div>
           }
           closeIcon={null}

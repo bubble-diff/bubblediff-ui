@@ -18,7 +18,7 @@ import {
   Toast,
   Typography,
 } from "@douyinfe/semi-ui";
-import { useEffect, useState } from "react";
+import { NewLifecycle, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Light } from "react-syntax-highlighter";
 import { githubGist } from "react-syntax-highlighter/dist/esm/styles/hljs";
@@ -319,11 +319,10 @@ const TaskPanel = () => {
       key: "回放请求成功率",
       value: (
         <Progress
-          percent={
-            taskDetail.total_record === 0
-              ? 0
-              : (taskDetail.success_record / taskDetail.total_record) * 100
-          }
+          percent={calculateSuccessRate(
+            taskDetail.total_record,
+            taskDetail.success_record
+          )}
           type="circle"
           showInfo
           format={(per) => per + "%"}
@@ -403,7 +402,9 @@ const TaskPanel = () => {
                       service_port: taskDetail.traffic_config.port.toString(),
                       replay_svr_addr: process.env.REACT_APP_REPLAY_ADDR!,
                     };
-                    navigator.clipboard.writeText(JSON.stringify(settings));
+                    navigator.clipboard.writeText(
+                      JSON.stringify(settings, null, 2)
+                    );
                     Toast.success("复制成功!");
                   } catch (err) {
                     Toast.error("复制失败!");
@@ -653,7 +654,7 @@ const TaskPanel = () => {
 
         {/* 删除任务弹窗 */}
         <Modal
-          header={null}
+          // header={null}
           visible={isDeleteModalVisible}
           onOk={() => {
             setIsDeleteModalVisible(false);
@@ -767,7 +768,7 @@ const TaskPanel = () => {
                       style={githubGist}
                       showLineNumbers={true}
                     >
-                      {record.diff}
+                      {record.diff === "" ? "No difference!" : record.diff}
                     </Light>
                   </Collapse.Panel>
                 </Collapse>
@@ -778,6 +779,14 @@ const TaskPanel = () => {
       </div>
     </div>
   );
+};
+
+const calculateSuccessRate = (total_record: number, success_record: number) => {
+  if (total_record === 0) {
+    return 0;
+  }
+  const rate = (success_record / total_record) * 100;
+  return parseFloat(rate.toFixed(2));
 };
 
 export default TaskPanel;

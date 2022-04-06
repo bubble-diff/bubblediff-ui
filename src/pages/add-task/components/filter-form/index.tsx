@@ -20,7 +20,7 @@ const FilterForm = () => {
           <div style={{ paddingBottom: "10px" }}>
             <Form.Label text={"Http路径过滤配置"} />
             <br />
-            <Text type="tertiary">支持正则表达式，todo:正则表达式参考文档</Text>
+            <Text type="tertiary">支持正则表达式</Text>
           </div>
 
           <ArrayField

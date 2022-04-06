@@ -21,6 +21,7 @@ export type FilterConfig = {
 };
 
 export type AdvanceConfig = {
+  // todo: 将递归diff模式改为保留全量record模式
   is_recursion_diff: boolean | undefined;
   is_ignore_array_sequence: boolean | undefined;
 };

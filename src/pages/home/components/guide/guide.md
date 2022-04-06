@@ -31,9 +31,9 @@
   <img src="/step1.png" style="zoom:50%" />
 </div>
 
-点击下一步，如信息符合校验，进入流量靶向信息表单。我们需要明确这个Diff任务的线上服务以及被测服务的网络信息。比如线上服务流量所经网卡，监听端口和被测服务IP地址。
+点击下一步，如信息符合校验，进入流量靶向信息表单。我们需要明确这个Diff任务的线上服务以及被测服务的网络信息。比如线上服务流量所经网卡，监听端口和被测服务IP地址。在本示例中，监听网卡设置为`lo0`，因为我们的线上服务和被测服务均部署于Mac本地，且请求也从本地发出，因此流量只经过本地网卡。
 
-> :bulb:一般地，现在HTTP服务部署在Docker中，我们只需监听`eth0`端口即可。
+> :bulb:一般地，企业的HTTP服务部署在Docker中，我们只需监听`eth0`端口即可。
 
 <div style="display:flex;justify-content:center">
   <img src="/step2.png" style="zoom:50%" />
@@ -52,6 +52,19 @@
 <div style="display:flex;justify-content:center">
   <img src="/step4.png" style="zoom:50%" />
 </div>
+
+
+> :bulb:忽略数组顺序模式，其实是将JSON里的数组视作集合看待。比如，没开启忽略数组顺模式时，结果将会是这样：
+>
+> <div style="display:flex;justify-content:center">
+>   <img src="/array_list.png" style="zoom:35%" />
+> </div>
+>
+> 然而，开启该模式后：
+>
+> <div style="display:flex;justify-content:center">
+>   <img src="/array_set.png" style="zoom:35%" />
+> </div>
 
 点击下一步，进入到预览界面，在这里可以确认自己填写的信息是否准确。
 

@@ -17,7 +17,7 @@ const TrafficForm = () => {
           <Form.Input
             field="device"
             label={"基准服务实例监听网卡"}
-            extraText={"todo: 补充说明(eth0 for linux/en0 for macos)"}
+            extraText={"一般地，通常为eth0/en0，但需要你结合实际场景填写！"}
             style={{ width: "50%" }}
             initValue={data.traffic_config.device}
             showClear={true}

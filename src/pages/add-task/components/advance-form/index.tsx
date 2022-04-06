@@ -10,18 +10,20 @@ const AdvanceForm = () => {
   };
 
   return (
-    <Form>
+    <Form extraTextPosition="middle">
       {({ formState, values, formApi }) => (
         <>
           <Form.Section text={"JSON Diff配置"}>
             <Form.Switch
               field="isRecursionDiff"
-              label="递归模式"
+              label="一视同仁模式"
+              extraText="保留响应完全一致的记录"
               initValue={data.advance_config.is_recursion_diff}
             />
             <Form.Switch
               field="isIgnoreArraySequence"
               label="忽略数组顺序模式"
+              extraText="将JSON的数组视为集合"
               initValue={data.advance_config.is_ignore_array_sequence}
             />
           </Form.Section>

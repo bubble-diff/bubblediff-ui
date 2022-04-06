@@ -76,7 +76,7 @@ const TaskPanel = () => {
     is_running: false,
     traffic_config: {
       device: undefined,
-      port: undefined,
+      port: "",
       addr: undefined,
       online_addr: undefined,
     },
@@ -398,9 +398,9 @@ const TaskPanel = () => {
                 onClick={() => {
                   try {
                     const settings = {
-                      taskid: id,
+                      taskid: parseInt(id!, 10),
                       interface: taskDetail.traffic_config.device,
-                      service_port: taskDetail.traffic_config.port,
+                      service_port: taskDetail.traffic_config.port.toString(),
                       replay_svr_addr: process.env.REACT_APP_REPLAY_ADDR!,
                     };
                     navigator.clipboard.writeText(JSON.stringify(settings));

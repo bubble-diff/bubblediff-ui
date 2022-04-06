@@ -12,6 +12,8 @@ import RequireAuth from "./components/require-auth";
 import TaskPanel from "./pages/task-panel";
 import UpdateTask from "./pages/update-task";
 
+import "github-markdown-css/github-markdown-light.css";
+
 const Index = () => {
   const [user, setUser] = useState<UserContent>(getEmptyUser());
 

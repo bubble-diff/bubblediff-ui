@@ -122,7 +122,7 @@ mkdir -p output
 go build -o output/bubblecopy # 产物将放置在output目录下
 ```
 
-### 获取settins.json
+### 获取settings.json
 
 在平台的任务主界面，当检测到你未部署BubbleCopy时，会显示一个横幅，点击一键获取Settings.json，即可获取其内容。在`output/`下创建`settings.json`文件，并将粘贴板内容写入该文件。
 

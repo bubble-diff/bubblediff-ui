@@ -233,7 +233,6 @@ const TaskPanel = () => {
 
   const getRecord = async () => {
     setIsRecordModalLoading(true);
-    await new Promise((r) => setTimeout(r, 500));
     try {
       const jwt = localStorage.getItem(JWT);
       if (jwt) {
@@ -247,10 +246,14 @@ const TaskPanel = () => {
           Toast.error("加载详情失败");
         } else {
           record.old_req = data.record.old_req;
-          record.old_resp = data.record.old_resp;
-          record.new_resp = data.record.new_resp;
           record.diff = data.record.diff;
           record.diff_rate = data.record.diff_rate;
+
+          // pretty json
+          const oldresp = JSON.parse(data.record.old_resp);
+          const newresp = JSON.parse(data.record.new_resp);
+          record.old_resp = JSON.stringify(oldresp, null, 2);
+          record.new_resp = JSON.stringify(newresp, null, 2);
         }
       }
     } catch (err) {
@@ -772,6 +775,9 @@ const TaskPanel = () => {
                     </Light>
                   </Collapse.Panel>
                 </Collapse>
+                <Tag color={record.diff_rate === "0.00%" ? "green" : "yellow"}>
+                  差异率：{record.diff_rate}
+                </Tag>
               </div>
             )}
           </div>

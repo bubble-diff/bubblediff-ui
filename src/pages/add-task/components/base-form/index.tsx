@@ -1,4 +1,6 @@
 import { Button, Form, Space } from "@douyinfe/semi-ui";
+import API from "../../../../api";
+import { JWT } from "../../../../constants";
 import { useGlobalContext } from "../../../../context";
 import { useAddTaskContext } from "../../context";
 
@@ -26,12 +28,21 @@ const BaseForm = () => {
             extraText={"任务名应简洁直接"}
             initValue={data.name}
             trigger={"custom"} // 仅当submit或formapi校验时触发validate
-            validate={(val, values) => {
+            validate={async (val, values) => {
               if (!val) {
                 return "该项为必填项";
               }
-              // todo: 任务名是否重复
-              return "";
+              const jwt = localStorage.getItem(JWT);
+              const { data } = await API.get(
+                `/api/v1/task/searchByName?name=${val}`,
+                {
+                  headers: { Authorization: `Bearer ${jwt}` },
+                }
+              );
+              if (data.task == null) {
+                return "";
+              }
+              return "已有该任务名，请更换一个新的任务名";
             }}
             // 设置rules.required，则标签自带小红星
             // 当validate设置时，rules失效
